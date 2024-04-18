@@ -1,0 +1,175 @@
+####################################################
+# kubernetes services can be exposed to a web-UI based 3 modes
+# ClusterIP (will required Ingress or some other mechanism)
+# or LoadBalancer or NodePort
+# OES UI, OES Gate, Spinnaker Deck and Spinnaker Gate service type
+k8sServiceType: ClusterIP
+
+### Proxy Settings
+extraEnvVars:
+  - name: JAVA_OPTS
+    value: "-XX:MaxRAMPercentage=100.0 -Dhttps.proxyHost=proxy.config.pcp.local -Dliquibase.shouldRun=false -Dhttps.proxyPort=3128 -Dhttps.nonProxyHosts='*.opsmx|.svc.local|.svc|.cluster.local|*.svc.local|*.svc|*.cluster.local|localhost|127.0.0.1|169.254.169.254|169.254.170.2|172.31.240.0/20|100.120.57.0/26|100.120.73.0/26|100.120.89.0/26|172.18.72.0/22|172.18.76.0/22|172.18.80.0/22|10.100.0.0/16|*CUSTOMER.com|github.CUSTOMER.com|.CUSTOMER.com|.execute-api.us-west-2.amazonaws.com|.s3.us-west-2.amazonaws.com|.us-west-2.vpce.amazonaws.com|amazonlinux.us-west-2.amazonaws.com|api.sagemaker.us-west-2.amazonaws.com|cloudformation.us-west-2.amazonaws.com|cloudtrail.us-west-2.amazonaws.com|codebuild-fips.us-west-2.amazonaws.com|codebuild.us-west-2.amazonaws.com|config.us-west-2.amazonaws.com|dynamodb.us-west-2.amazonaws.com|ec2.us-west-2.amazonaws.com|ec2messages.us-west-2.amazonaws.com|elasticloadbalancing.us-west-2.amazonaws.com|events.us-west-2.amazonaws.com|kinesis.us-west-2.amazonaws.com|kms.us-west-2.amazonaws.com|logs.us-west-2.amazonaws.com|monitoring.us-west-2.amazonaws.com|runtime.sagemaker.us-west-2.amazonaws.com|secretsmanager.us-west-2.amazonaws.com|servicecatalog.us-west-2.amazonaws.com|sns.us-west-2.amazonaws.com|ssm.us-west-2.amazonaws.com|ssmmessages.us-west-2.amazonaws.com|sts.us-west-2.amazonaws.com' -Dhttp.proxyHost=proxy.config.pcp.local -Dhttp.proxyPort=3128 -Dhttp.nonProxyHosts='*.opsmx|.svc.local|.svc|.cluster.local|*.svc.local|*.svc|*.cluster.local|localhost|127.0.0.1|169.254.169.254|169.254.170.2|172.31.240.0/20|100.120.57.0/26|100.120.73.0/26|100.120.89.0/26|172.18.72.0/22|172.18.76.0/22|172.18.80.0/22|10.100.0.0/16|*.CUSTOMER.com|github.pie.CUSTOMER.com|.CUSTOMER.com|.execute-api.us-west-2.amazonaws.com|.s3.us-west-2.amazonaws.com|.us-west-2.vpce.amazonaws.com|amazonlinux.us-west-2.amazonaws.com|api.sagemaker.us-west-2.amazonaws.com|cloudformation.us-west-2.amazonaws.com|cloudtrail.us-west-2.amazonaws.com|codebuild-fips.us-west-2.amazonaws.com|codebuild.us-west-2.amazonaws.com|config.us-west-2.amazonaws.com|dynamodb.us-west-2.amazonaws.com|ec2.us-west-2.amazonaws.com|ec2messages.us-west-2.amazonaws.com|elasticloadbalancing.us-west-2.amazonaws.com|events.us-west-2.amazonaws.com|kinesis.us-west-2.amazonaws.com|kms.us-west-2.amazonaws.com|logs.us-west-2.amazonaws.com|monitoring.us-west-2.amazonaws.com|runtime.sagemaker.us-west-2.amazonaws.com|secretsmanager.us-west-2.amazonaws.com|servicecatalog.us-west-2.amazonaws.com|sns.us-west-2.amazonaws.com|ssm.us-west-2.amazonaws.com|ssmmessages.us-west-2.amazonaws.com|sts.us-west-2.amazonaws.com|oes-minio.opsmx|oes-openldap.opsmx|oes-redis-headless.opsmx|oes-redis-master.opsmx|oes-spinnaker-halyard.opsmx|oes-autopilot.opsmx|oes-dashboard.opsmx|oes-db.opsmx|oes-gate.opsmx|oes-platform.opsmx|oes-sapor.opsmx|oes-ui.opsmx|oes-visibility.opsmx|opa.opsmx|opsmx-controller-controller1.opsmx|opsmx-controller-controller1-interproc.opsmx|sapor-gate.opsmx|spin-clouddriver-caching.opsmx|spin-clouddriver-ro.opsmx|spin-clouddriver-ro-deck.opsmx|spin-clouddriver-rw.opsmx|spin-deck.opsmx|spin-deck-lb.opsmx|spin-echo-scheduler.opsmx|spin-echo-worker.opsmx|spin-fiat.opsmx|spin-front50.opsmx|spin-gate.opsmx|spin-gate-lb.opsmx|spin-igor.opsmx|spin-orca.opsmx|spin-rosco.opsmx|oes-minio|oes-openldap|oes-redis-headless|oes-redis-master|oes-spinnaker-halyard|oes-autopilot|oes-dashboard|oes-db|oes-gate|oes-platform|oes-sapor|oes-ui|oes-visibility|opa|opsmx-controller-controller1|opsmx-controller-controller1-interproc|sapor-gate|spin-clouddriver-caching|spin-clouddriver-ro|spin-clouddriver-ro-deck|spin-clouddriver-rw|spin-deck|spin-deck-lb|spin-echo-scheduler|spin-echo-worker|spin-fiat|spin-front50|spin-gate|spin-gate-lb|spin-igor|spin-orca|spin-rosco'"
+#####################################################
+global:
+  ## URL that will be used to access ISD. MUST BE CHANGED
+  ## Ensure that this URL is reachable from your browser. Either DNS name server record must exist or "hosts" file must be updated
+  oesUI:
+    protocol: https
+    host: PROVIDE.YOUR.ISD.URL
+  oesGate:
+    protocol: https
+    host: PROVIDE.YOUR.ISD-GATE.URL #Update the correct oes-gate url
+  spinGate:
+    protocol: https
+    host: PROVIDE.YOUR.SPINNAKER-GATE.URL  #Update the correct spin-gate url, same as oes-gate for common-gate
+  spinDeck:
+    protocol: https
+    host: PROVIDE.YOUR.SPINNAKER.URL
+
+  commonGate:
+    enabled: false
+
+  ssl:
+    enabled: false # Set to true if using "httpS" urls. TLS certificates must be generated for the above URL
+
+  certManager:
+    installed: false # Set to true if you have cert-manager installed in the cluster, the URL must be accessible from the internet
+
+  ## nginx ingress objects are created if set to true. Set to false if using LoadBalancer or any other ingress
+  ## The cluster MUST have nginx ingress controller already installed
+  createIngress: false
+
+  #Only for trial purposes, pod-baesd git is installed and automatically configured
+  gitea:
+    enabled: false # Set to true for trial-install only
+
+  ###############################################################################
+  # A trial LDAP is installed by default, with users: admin, user1,2,3 with user1password, user2pa...
+  # Set it to false if own LDAP is to be configured
+  installOpenLdap: true
+
+  ## ldap configuration used in oes-gate, oes-platform and spinnaker gate for authentication and authorization
+  ldap:
+    managerPassword: encrypted:ldappassword:ldappassword
+
+  # Set it to true only if gate.config.saml.enabled to true
+  auth:
+    saml: false
+
+   ## Valid admin details for ISD authorization
+  saporgate:
+    config:
+      username: admin       #Name of the valid user in your service provider
+      adminGroups: admin    #Name of the valid admin group in your service provider
+      password: encrypted:saporpassword:saporpassword  #password for the saporgate
+
+  minio:
+    accessKey: encrypted:miniopassword:miniopassword
+    secretKey: encrypted:miniopassword:miniopassword
+
+####################################################
+spinnaker:
+  halyard:
+    env:
+      - name: JAVA_OPTS
+        value: "-XX:MaxRAMPercentage=100.0 -Dhttps.proxyHost=proxy.config.pcp.local -Dliquibase.shouldRun=false -Dhttps.proxyPort=3128 -Dhttps.nonProxyHosts='*.opsmx|.svc.local|.svc|.cluster.local|*.svc.local|*.svc|*.cluster.local|localhost|127.0.0.1|169.254.169.254|169.254.170.2|172.31.240.0/20|100.120.57.0/26|100.120.73.0/26|100.120.89.0/26|172.18.72.0/22|172.18.76.0/22|172.18.80.0/22|10.100.0.0/16|*.CUSTOMER.com|github.pie.CUSTOMER.com|.CUSTOMER.com|.execute-api.us-west-2.amazonaws.com|.s3.us-west-2.amazonaws.com|.us-west-2.vpce.amazonaws.com|amazonlinux.us-west-2.amazonaws.com|api.sagemaker.us-west-2.amazonaws.com|cloudformation.us-west-2.amazonaws.com|cloudtrail.us-west-2.amazonaws.com|codebuild-fips.us-west-2.amazonaws.com|codebuild.us-west-2.amazonaws.com|config.us-west-2.amazonaws.com|dynamodb.us-west-2.amazonaws.com|ec2.us-west-2.amazonaws.com|ec2messages.us-west-2.amazonaws.com|elasticloadbalancing.us-west-2.amazonaws.com|events.us-west-2.amazonaws.com|kinesis.us-west-2.amazonaws.com|kms.us-west-2.amazonaws.com|logs.us-west-2.amazonaws.com|monitoring.us-west-2.amazonaws.com|runtime.sagemaker.us-west-2.amazonaws.com|secretsmanager.us-west-2.amazonaws.com|servicecatalog.us-west-2.amazonaws.com|sns.us-west-2.amazonaws.com|ssm.us-west-2.amazonaws.com|ssmmessages.us-west-2.amazonaws.com|sts.us-west-2.amazonaws.com' -Dhttp.proxyHost=proxy.config.pcp.local -Dhttp.proxyPort=3128 -Dhttp.nonProxyHosts='*.opsmx|.svc.local|.svc|.cluster.local|*.svc.local|*.svc|*.cluster.local|localhost|127.0.0.1|169.254.169.254|169.254.170.2|172.31.240.0/20|100.120.57.0/26|100.120.73.0/26|100.120.89.0/26|172.18.72.0/22|172.18.76.0/22|172.18.80.0/22|10.100.0.0/16|*.CUSTOMER.com|github.pie.CUSTOMER.com|.CUSTOMER.com|.execute-api.us-west-2.amazonaws.com|.s3.us-west-2.amazonaws.com|.us-west-2.vpce.amazonaws.com|amazonlinux.us-west-2.amazonaws.com|api.sagemaker.us-west-2.amazonaws.com|cloudformation.us-west-2.amazonaws.com|cloudtrail.us-west-2.amazonaws.com|codebuild-fips.us-west-2.amazonaws.com|codebuild.us-west-2.amazonaws.com|config.us-west-2.amazonaws.com|dynamodb.us-west-2.amazonaws.com|ec2.us-west-2.amazonaws.com|ec2messages.us-west-2.amazonaws.com|elasticloadbalancing.us-west-2.amazonaws.com|events.us-west-2.amazonaws.com|kinesis.us-west-2.amazonaws.com|kms.us-west-2.amazonaws.com|logs.us-west-2.amazonaws.com|monitoring.us-west-2.amazonaws.com|runtime.sagemaker.us-west-2.amazonaws.com|secretsmanager.us-west-2.amazonaws.com|servicecatalog.us-west-2.amazonaws.com|sns.us-west-2.amazonaws.com|ssm.us-west-2.amazonaws.com|ssmmessages.us-west-2.amazonaws.com|sts.us-west-2.amazonaws.com|oes-minio.opsmx|oes-openldap.opsmx|oes-redis-headless.opsmx|oes-redis-master.opsmx|oes-spinnaker-halyard.opsmx|oes-autopilot.opsmx|oes-dashboard.opsmx|oes-db.opsmx|oes-gate.opsmx|oes-platform.opsmx|oes-sapor.opsmx|oes-ui.opsmx|oes-visibility.opsmx|opa.opsmx|opsmx-controller-controller1.opsmx|opsmx-controller-controller1-interproc.opsmx|sapor-gate.opsmx|spin-clouddriver-caching.opsmx|spin-clouddriver-ro.opsmx|spin-clouddriver-ro-deck.opsmx|spin-clouddriver-rw.opsmx|spin-deck.opsmx|spin-deck-lb.opsmx|spin-echo-scheduler.opsmx|spin-echo-worker.opsmx|spin-fiat.opsmx|spin-front50.opsmx|spin-gate.opsmx|spin-gate-lb.opsmx|spin-igor.opsmx|spin-orca.opsmx|spin-rosco.opsmx|oes-minio|oes-openldap|oes-redis-headless|oes-redis-master|oes-spinnaker-halyard|oes-autopilot|oes-dashboard|oes-db|oes-gate|oes-platform|oes-sapor|oes-ui|oes-visibility|opa|opsmx-controller-controller1|opsmx-controller-controller1-interproc|sapor-gate|spin-clouddriver-caching|spin-clouddriver-ro|spin-clouddriver-ro-deck|spin-clouddriver-rw|spin-deck|spin-deck-lb|spin-echo-scheduler|spin-echo-worker|spin-fiat|spin-front50|spin-gate|spin-gate-lb|spin-igor|spin-orca|spin-rosco'"
+  gitopsHalyard: # A repo with appropriate contents used for configuring Spinnaker
+    repo:
+      type: git # git, s3, stash(bitbucket server) use a different sample values file for s3/bitbuck-stash
+      ## Git repo details, https://<baseUrlHostName>/<organization>/<repository>
+      organization: CUSTOMER_ORGANIZATION
+      repository: CUSTOMER_REPO
+      username: CUSTOMER_USERNAME
+      dynamicAccRepository: SAME_AS_REPOSITORY
+
+      ########################################################################################
+      ## Additional git-repo parameters, typically no need to be change
+      ########################################################################################
+
+      configArgs: "http.sslVerify=false"  # Extra arguments to the git clone command
+      ## Configure below fields only if repo type is git/stash.
+      baseUrlHostName: github.com
+      projectName: "CUSTOMER_PROJECT"
+      halConfigBranch: main
+      halConfigPath: /
+      dynAccntConfigPath: /
+      token: encrypted:gittoken:gittoken
+
+  ########################################################################################
+  # Lines below this do not need to be changed except where external SSO and DBs are used
+  ########################################################################################
+  
+  ## Here basic ldap auth is used by default; everything under spinCli will be pasted in ~/.spin/config
+  spinCli:
+    auth:
+      basic:
+        username: admin          # Use credentials corresponding to saporgate.config.username
+        password: encrypted:saporpassword:saporpassword     # Use credentials corresponding to saporgate.config.password
+
+####################################################
+
+db:
+  url: jdbc:postgresql://oes-db:5432
+  username: postgres
+  password: encrypted:dbpassword:dbpassword
+
+###############################################################################
+gate:
+  config:
+    #####################################################
+    # SAML AUthentication
+    #####################################################
+    # keytool -genkey -v -keystore oessaml.jks -alias saml -keyalg RSA -keysize 2048 -validity 10000
+    # oessaml.jks and oesmetadata.xml are mounted as secrets, create them as follows
+    # kubectl create secret generic oesmetadataxml --from-file=oesmetadata.xml -n <namespace>
+    # kubectl create secret generic oessamljks --from-file=oessaml.jks -n <namespace>
+    # kubectl create secret generic samljks-password --from-literal password=changeit -n <namespace>
+    saml:
+      enabled: false
+      userSource: gate  # Groups will be obtained from SAML
+      keyStore: /opt/spinnaker/saml/oessaml.jks  # The key in this secret must be oessaml.jks
+      keyStorePassword: encrypted:keystorepassword:keystorepassword
+      keyStoreAliasName: saml
+      metadataUrl: /opt/spinnaker/saml/oesmetadata.xml # The key in this secret must be oesmetadata.xml
+      redirectProtocol: https
+      redirectHostname: PROVIDE.YOUR.GATE.URL  # OES gate host name
+      redirectBasePath: /
+      issuerId: OKTA_ISSUER_ID
+      jksSecretName: oessamljks
+      metadataSecretName: oesmetadataxml
+
+    #####################################################
+    #OAUTH2 Authentication for GitHub
+    #####################################################
+    oauth2:
+      enabled: false
+      client:
+        clientId: #CLIENT_ID
+        clientSecret: #CLIENT_SECRET_ID
+        accessTokenUri: https://github.com/login/oauth/access_token
+        userAuthorizationUri: https://github.com/login/oauth/authorize
+        scope: user-email
+      resource:
+        userInfoUri: https://api.github.com/user
+      userInfoMapping:
+        email: email
+        firstName: firstname
+        lastName: name
+        username: login
+      provider: GITHUB
+
+###############################################################################
+rabbitmq:
+  username: rabbitmq
+  password: encrypted:rabbitmqpassword:rabbitmqpassword
+
+###############################################################################
+## Details of redis-master image for OES
+redis:
+  url: redis://:encrypted:redispassword:redispassword@{{ .Release.Name }}-redis-master
+  password: encrypted:redispassword:redispassword
+#####################################################
+# OpenLDAP custom configuration; will override default configuration of openldap helm chart
+openldap:
+  adminPassword: encrypted:ldappassword:ldappassword
+  configPassword: encrypted:ldapconfigpassword:ldapconfigpassword
