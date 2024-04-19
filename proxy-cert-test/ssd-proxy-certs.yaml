@@ -1,0 +1,18 @@
+# Config MAP for testing proxy and certs using curl
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ssd-proxy-certs
+  namespace: default
+data:
+  CURL_CA_BUNDLE: "/usr/local/share/ca-certificates/ca.crt"  # This is used by CURL command
+  # The ones below are required for ISD, SSD, etc. 
+  # JAVA_OPTS needs to be set for java applications and oes-cacerts needs to be mounted appropriately
+  #SSL_CERT_FILE: "/usr/local/share/ca-certificates/ca.crt"
+  #http_proxy: "http://myproxy.local:8812"
+  #https_proxy: "http://myproxy.local:8812"
+  #HTTPS_PROXY: "http://myproxy.local:8812"
+  #HTTP_PROXY: "http://myproxy.local:8812"
+  NO_PROXY: "*.cache.amazonaws.com,*.opsmx,.svc.local,.svc,.cluster.local,*.svc.local,*.svc,*.cluster.local,localhost,127.0.0.1"
+  no_proxy: "*.cache.amazonaws.com,*.opsmx,.svc.local,.svc,.cluster.local,*.svc.local,*.svc,*.cluster.local,localhost,127.0.0.1"
+

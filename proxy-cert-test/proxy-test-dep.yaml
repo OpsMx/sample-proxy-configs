@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  name: proxy-test
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: proxy
+      component: test
+  template:
+    metadata:
+      labels:
+        app: proxy
+        component: test
+    spec:
+      containers:
+      - command: ["sleep","infinity"]
+        envFrom:
+        - configMapRef:
+            name: ssd-proxy-certs
+        image: curlimages/curl:8.7.1
+        imagePullPolicy: Always
+        name: proxy-test
+        volumeMounts:
+        - mountPath: /usr/local/share/ca-certificates
+          name: ca-certs
+      volumes:
+      - name: ca-certs
+        configMap:
+          defaultMode: 420
+          optional: false  # Change to true if not used
+          name: ca-certs
+      - name: ssd-proxy-certs
+        configMap:
+          defaultMode: 420
+          optional: false  # Change to true if not used
+          name: ssd-proxy-certs
