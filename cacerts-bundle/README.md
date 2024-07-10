@@ -1,4 +1,4 @@
-##To create oes-cacerts secret, we start with an existing secret and import additional certs into it.
+## To create oes-cacerts secret, we start with an existing secret and import additional certs into it.
 - This requires "keytool" command that comes with JDK (not JRE)
 - Each cert loaded should have a differnent "alias" while importing and it should conflict with existing ones
 
